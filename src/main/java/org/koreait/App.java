@@ -1,5 +1,9 @@
 package org.koreait;
 
+import java.sql.Connection;
+
+import java.sql.SQLException;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -8,6 +12,8 @@ public class App {
     static Scanner sc;
     static int lastId;
     static List<Article> articles;
+    private static Connection con;
+
 
     public App() {
         sc = new Scanner(System.in);
@@ -15,7 +21,7 @@ public class App {
         articles = new ArrayList<>();
     }
 
-    public static void run() {
+    public static void run() throws SQLException {
         System.out.println("== 프로그램 시작 ==");
 
         while (true) {
@@ -36,9 +42,9 @@ public class App {
                 case "article list":
                     showList();
                     break;
-                case "article delete":
-                    doDelete();
-                    break;
+//                case "article delete":
+//                    doDelete();
+//                    break;
                 default:
                     System.out.println("명령어오류");
                     break;
@@ -46,18 +52,40 @@ public class App {
         }
     }
 
-    private static void doDelete() {
-        Article found = foundArticleId();
+//    private static void doDelete() {
+//        Article found = foundArticleId();
+//    }
+//
+//    private static Article foundArticleId() {
+//        for (Article a : articles) {
+//            if (a.getId() == lastId) {
+//                return a;
+//            }
+//        }
+//        return null;
+//    }
+
+    private static void doWrite() {
+        System.out.println("== 게시물 작성 ==");
+        System.out.print("제목 : ");
+        String title = sc.nextLine();
+        System.out.print("내용 : ");
+        String body = sc.nextLine();
+
+        int id = lastId++;
+
+        articles.add(new Article(id, title, body));
+
+        System.out.printf("%d번 게시물 작성되었습니다.\n", id);
     }
 
-    private static Article foundArticleId() {
-        for (Article a : articles) {
-            if (a.getId() == lastId) {
-                return a;
-            }
-        }
-        return null;
-    }
+//    private static Connection doConnection() throws SQLException {
+//        String jdbc_url = "jdbc:mariadb://localhost:3306/JDBC";
+//        String user = "root";
+//        String password = "1234";
+//        Connection con = DriverManager.getConnection(jdbc_url, user, password);
+//        return con;
+//    }
 
     private static void showList() {
         if (articles.isEmpty()) {
@@ -72,19 +100,6 @@ public class App {
 
         }
 
-    }
-
-    private static void doWrite() {
-        System.out.println("== 게시물 작성 ==");
-        System.out.print("제목 : ");
-        String title = sc.nextLine();
-        System.out.print("내용 : ");
-        String body = sc.nextLine();
-
-        int id = lastId++;
-
-        articles.add(new Article(id, title, body));
-        System.out.printf("%d번 게시물 작성되었습니다.\n", id);
     }
 
 }
