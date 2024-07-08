@@ -1,3 +1,9 @@
+#String url = "jdbc:mariadb://127.0.0.1:3306/AM_JDBC_2024_07?useUnicode=true&characterEncoding=utf8&autoReconnect=true&serverTimezone=Asia/Seoul";
+#String user = "root";
+#String pass = "1234";
+#Class.forName("org.mariadb.jdbc.Driver");
+
+
 DROP DATABASE IF EXISTS `AM_JDBC_2024_07`;
 CREATE DATABASE `AM_JDBC_2024_07`;
 USE `AM_JDBC_2024_07`;
@@ -25,5 +31,4 @@ INSERT INTO article
         title = CONCAT('제목1', SUBSTRING(RAND() * 1000 From 1 For 2)),
         `body` = CONCAT('내용', SUBSTRING(RAND() * 1000 From 1 For 2));
 
-SELECT *
-FROM article;
+SELECT * FROM article ORDER BY 'id' desc ;
