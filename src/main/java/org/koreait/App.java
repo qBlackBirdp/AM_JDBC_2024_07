@@ -52,18 +52,6 @@ public class App {
         }
     }
 
-//    private static void doDelete() {
-//        Article found = foundArticleId();
-//    }
-//
-//    private static Article foundArticleId() {
-//        for (Article a : articles) {
-//            if (a.getId() == lastId) {
-//                return a;
-//            }
-//        }
-//        return null;
-//    }
 
     private static void doWrite() {
         System.out.println("== 게시물 작성 ==");
@@ -79,14 +67,6 @@ public class App {
         System.out.printf("%d번 게시물 작성되었습니다.\n", id);
     }
 
-//    private static Connection doConnection() throws SQLException {
-//        String jdbc_url = "jdbc:mariadb://localhost:3306/JDBC";
-//        String user = "root";
-//        String password = "1234";
-//        Connection con = DriverManager.getConnection(jdbc_url, user, password);
-//        return con;
-//    }
-
     private static void showList() {
         if (articles.isEmpty()) {
             System.out.println("게시물 없어");
@@ -97,9 +77,25 @@ public class App {
                 Article article = articles.get(i);
                 System.out.printf("%d       /       %s      /       %s \n", article.getId(), article.getTitle(), article.getBody());
             }
-
         }
-
     }
 
+//    private static void doDelete() {
+//        Article found = foundArticleId();
+//    }
+//
+//    private static Article foundArticleId() {
+//        for (Article a : articles) {
+//            if (a.getId() == lastId) {
+//                return a;
+//            }
+//        }
+//        return null;
+//    private static Connection doConnection() throws SQLException {
+//        String jdbc_url = "jdbc:mariadb://localhost:3306/JDBC";
+//        String user = "root";
+//        String password = "1234";
+//        Connection con = DriverManager.getConnection(jdbc_url, user, password);
+//        return con;
+//    }
 }
