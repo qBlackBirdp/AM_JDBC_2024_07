@@ -26,9 +26,24 @@ FROM article;
 SELECT substring(rand() * 1000 FROM 1 FOR 2);
 
 INSERT INTO article
-    SET regDate = now(),
-        updateDate = now(),
-        title = CONCAT('제목1', SUBSTRING(RAND() * 1000 From 1 For 2)),
-        `body` = CONCAT('내용', SUBSTRING(RAND() * 1000 From 1 For 2));
+SET regDate    = now(),
+    updateDate = now(),
+    title      = CONCAT('제목', SUBSTRING(RAND() * 1000 From 1 For 2)),
+    `body`     = CONCAT('내용', SUBSTRING(RAND() * 1000 From 1 For 2));
 
-SELECT * FROM article ORDER BY 'id' desc ;
+SELECT *
+FROM article
+ORDER BY 'id' desc;
+
+UPDATE article
+SET updateDate = NOW() , title = 'kk' , `body` = 'kk' WHERE id = 3;
+
+DELETE
+from article
+where id = 4;
+
+SELECT *
+FROM article
+WHERE EXISTS (SELECT *
+              FROM article
+              WHERE id = 9);
