@@ -35,12 +35,16 @@ SELECT *
 FROM article
 ORDER BY 'id' desc;
 
-UPDATE article
-SET updateDate = NOW() , title = 'kk' , `body` = 'kk' WHERE id = 3;
+UPDATE article SET updateDate = NOW() ,
+                   title = 'kk' ,
+                   `body` = 'kk'
+               WHERE id = 3;
 
 DELETE
 from article
 where id = 4;
+
+DELETE FROM article WHERE id = 4;
 
 SELECT *
 FROM article

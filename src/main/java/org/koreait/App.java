@@ -4,10 +4,7 @@ import org.koreait.Util.DBUtil;
 import org.koreait.Util.SecSql;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Scanner;
+import java.util.*;
 
 public class App {
 
@@ -105,7 +102,7 @@ public class App {
             for (Article article : articles) {
                 System.out.printf("  %d     /   %s   \n", article.getId(), article.getTitle());
             }
-        } else if (cmd.startsWith("article delete")){
+        } else if (cmd.startsWith("article delete")) {
 
             int id = 0;
 
@@ -117,11 +114,20 @@ public class App {
             }
 
             SecSql sql = new SecSql();
-            sql.append("DELETE FROM article WHERE id = ?;" , id);
-            DBUtil.delete(conn, sql);
+            sql.append("SELECT COUNT(*) FROM article WHERE id = ?;", id);
+            int deleteId = DBUtil.selectRowIntValue(conn, sql);
+
+            if (deleteId == 0) {
+                System.out.println(id + "번 게시물 없어.");
+            } else {
+                SecSql sql2 = new SecSql();
+                sql2.append("DELETE FROM article WHERE id = ?;", id);
+                DBUtil.delete(conn, sql2);
+                System.out.println(id + "번 글이 삭제되었습니다.");
+            }
 
 
-            System.out.println(id + "번 글이 삭제되었습니다.");
+
         } else if (cmd.startsWith("article modify")) {
 
             int id = 0;
@@ -132,59 +138,28 @@ public class App {
                 System.out.println("번호는 정수로 입력해");
                 return 0;
             }
+            SecSql sql = new SecSql();
+            sql.append("SELECT COUNT(*) FROM article WHERE id = ?;", id);
+            int articleId = DBUtil.selectRowIntValue(conn, sql);
 
-//            if () {
-//
-//            } else {
+            if (articleId == 0) {
+                System.out.println(id + "번 게시물 없어.");
+            } else {
                 System.out.println("==수정==");
                 System.out.print("새 제목 : ");
                 String title = sc.nextLine().trim();
                 System.out.print("새 내용 : ");
                 String body = sc.nextLine().trim();
-                SecSql sql = new SecSql();
-                sql.append("INSERT INTO article");
-                sql.append("SET regDate = NOW(),");
-                sql.append("updateDate = NOW(),");
-                sql.append("title = ?,", title);
-                sql.append("`body`= ?;", body);
+                SecSql sql2 = new SecSql();
+                sql2.append("UPDATE article");
+                sql2.append("SET updateDate = NOW(),");
+                sql2.append("title = ?,", title);
+                sql2.append("`body`= ?", body);
+                sql2.append("WHERE id = ?;", id);
 
-                DBUtil.update(conn, sql);
-//            }
-
-
-//            PreparedStatement pstmt = null;
-
-
-//            try {
-//                String sql = "UPDATE article";
-//                sql += " SET updateDate = NOW()";
-//                if (title.length() > 0) {
-//                    sql += " ,title = '" + title + "'";
-//                }
-//                if (body.length() > 0) {
-//                    sql += " ,`body` = '" + body + "'";
-//                }
-//                sql += " WHERE id = " + id + ";";
-//
-//                System.out.println(sql);
-//
-//                pstmt = conn.prepareStatement(sql);
-//
-//                pstmt.executeUpdate();
-//
-//            } catch (SQLException e) {
-//                System.out.println("에러 4 : " + e);
-//            } finally {
-//                try {
-//                    if (pstmt != null && !pstmt.isClosed()) {
-//                        pstmt.close();
-//                    }
-//                } catch (SQLException e) {
-//                    e.printStackTrace();
-//                }
-//
-//            }
-            System.out.println(id + "번 글이 수정되었습니다.");
+                DBUtil.update(conn, sql2);
+                System.out.println(id + "번 글이 수정되었습니다.");
+            }
         }
         return 0;
     }
