@@ -126,8 +126,6 @@ public class App {
                 System.out.println(id + "번 글이 삭제되었습니다.");
             }
 
-
-
         } else if (cmd.startsWith("article modify")) {
 
             int id = 0;
@@ -159,6 +157,42 @@ public class App {
 
                 DBUtil.update(conn, sql2);
                 System.out.println(id + "번 글이 수정되었습니다.");
+            }
+        } else if (cmd.startsWith("article detail")) {
+            int id = 0;
+            try {
+                id = Integer.parseInt(cmd.split(" ")[2]);
+            } catch (Exception e) {
+                System.out.println("번호는 정수로 입력해");
+                return 0;
+            }
+            SecSql sql = new SecSql();
+            sql.append("SELECT COUNT(*) FROM article WHERE id = ?;", id);
+            int articleId = DBUtil.selectRowIntValue(conn, sql);
+            if (articleId == 0) {
+                System.out.println(id + "번 게시물 없어.");
+            } else {
+                List<Article> articles = new ArrayList<>();
+
+                SecSql sql2 = new SecSql();
+                sql2.append("SELECT * FROM article WHERE id = ?;", id);
+                List<Map<String, Object>> articleListMap = DBUtil.selectRows(conn, sql2);
+                for (Map<String, Object> articleMap : articleListMap) {
+                    articles.add(new Article(articleMap));
+                }
+                if (articles.size() == 0) {
+                    System.out.println(id + "번 게시물 없어");
+                } else {
+                    for (Article article : articles) {
+                        System.out.println("번호 : " + article.getId());
+                        System.out.println("제목 : " + article.getTitle());
+                        System.out.println("내용 : " + article.getBody());
+                        System.out.println("생성시간 : " + article.getRegDate());
+                        System.out.println("수정시간 : " + article.getUpdateDate());
+
+                    }
+                }
+
             }
         }
         return 0;

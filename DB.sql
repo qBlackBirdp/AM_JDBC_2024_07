@@ -31,8 +31,7 @@ SET regDate    = now(),
     title      = CONCAT('제목', SUBSTRING(RAND() * 1000 From 1 For 2)),
     `body`     = CONCAT('내용', SUBSTRING(RAND() * 1000 From 1 For 2));
 
-SELECT *
-FROM article
+SELECT * FROM article
 ORDER BY 'id' desc;
 
 UPDATE article SET updateDate = NOW() ,
