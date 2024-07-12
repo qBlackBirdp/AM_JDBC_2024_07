@@ -1,7 +1,10 @@
 package org.koreait;
 
+import org.koreait.Article.Article;
 import org.koreait.Util.DBUtil;
 import org.koreait.Util.SecSql;
+import org.koreait.exception.SQLErrorException;
+import org.koreait.member.Member;
 
 import java.sql.*;
 import java.util.*;
@@ -57,24 +60,90 @@ public class App {
             return -1;
         }
 
-        if (cmd.equals("article write")) {
-            System.out.println("==글쓰기==");
-            System.out.print("제목 : ");
-            String title = sc.nextLine();
-            System.out.print("내용 : ");
-            String body = sc.nextLine();
+        if (cmd.equals("member join")) {
+            String loginId = null;
+            String loginPw = null;
+            String loginPwConfirm = null;
+            String name = null;
+
+            System.out.println("==회원가입==");
+            while (true) {
+                System.out.print("로그인 아이디 : ");
+                loginId = sc.nextLine().trim();
+
+                if (loginId.length() == 0 || loginId.contains(" ")) {
+                    System.out.println("아이디 똑바로 써");
+                    continue;
+                }
+
+                SecSql sql = new SecSql();
+
+                sql.append("SELECT COUNT(*) > 0");
+                sql.append("FROM `member`");
+                sql.append("WHERE loginId = ?;", loginId);
+
+                boolean isLoindIdDup = DBUtil.selectRowBooleanValue(conn, sql);
+
+                if (isLoindIdDup) {
+                    System.out.println(loginId + "는(은) 이미 사용중");
+                    continue;
+                }
+                break;
+            }
+            while (true) {
+                System.out.print("비밀번호 : ");
+                loginPw = sc.nextLine().trim();
+
+                if (loginPw.length() == 0 || loginPw.contains(" ")) {
+                    System.out.println("비번 똑바로 입력해");
+                    continue;
+                }
+
+                boolean loginPwCheck = true;
+
+                while (true) {
+                    System.out.print("비밀번호 확인 : ");
+                    loginPwConfirm = sc.nextLine().trim();
+
+                    if (loginPwConfirm.length() == 0 || loginPwConfirm.contains(" ")) {
+                        System.out.println("비번 확인 똑바로 써");
+                        continue;
+                    }
+                    if (loginPw.equals(loginPwConfirm) == false) {
+                        System.out.println("일치하지 않아");
+                        loginPwCheck = false;
+                    }
+                    break;
+                }
+                if (loginPwCheck) {
+                    break;
+                }
+            }
+
+            while (true) {
+                System.out.print("이름 : ");
+                name = sc.nextLine();
+
+                if (name.length() == 0 || name.contains(" ")) {
+                    System.out.println("이름 똑바로 써");
+                    continue;
+                }
+                break;
+            }
+
 
             SecSql sql = new SecSql();
 
-            sql.append("INSERT INTO article");
+            sql.append("INSERT INTO `member`");
             sql.append("SET regDate = NOW(),");
             sql.append("updateDate = NOW(),");
-            sql.append("title = ?,", title);
-            sql.append("`body`= ?;", body);
+            sql.append("loginId = ?,", loginId);
+            sql.append("loginPw= ?,", loginPw);
+            sql.append("name = ?;", name);
 
             int id = DBUtil.insert(conn, sql);
 
-            System.out.println(id + "번 글이 생성되었습니다");
+            System.out.println(id + "번 회원이 생성되었습니다");
 
         } else if (cmd.equals("article list")) {
             System.out.println("==목록==");
@@ -151,8 +220,12 @@ public class App {
                 SecSql sql2 = new SecSql();
                 sql2.append("UPDATE article");
                 sql2.append("SET updateDate = NOW(),");
-                sql2.append("title = ?,", title);
-                sql2.append("`body`= ?", body);
+                if (!title.isEmpty()) {
+                    sql2.append("title = ?,", title);
+                }
+                if (!body.isEmpty()) {
+                    sql2.append("`body`= ?", body);
+                }
                 sql2.append("WHERE id = ?;", id);
 
                 DBUtil.update(conn, sql2);
@@ -172,28 +245,26 @@ public class App {
             if (articleId == 0) {
                 System.out.println(id + "번 게시물 없어.");
             } else {
-                List<Article> articles = new ArrayList<>();
 
                 SecSql sql2 = new SecSql();
                 sql2.append("SELECT * FROM article WHERE id = ?;", id);
-                List<Map<String, Object>> articleListMap = DBUtil.selectRows(conn, sql2);
-                for (Map<String, Object> articleMap : articleListMap) {
-                    articles.add(new Article(articleMap));
-                }
-                if (articles.size() == 0) {
-                    System.out.println(id + "번 게시물 없어");
-                } else {
-                    for (Article article : articles) {
-                        System.out.println("번호 : " + article.getId());
-                        System.out.println("제목 : " + article.getTitle());
-                        System.out.println("내용 : " + article.getBody());
-                        System.out.println("생성시간 : " + article.getRegDate());
-                        System.out.println("수정시간 : " + article.getUpdateDate());
+                Map<String, Object> articleListMap = DBUtil.selectRow(conn, sql2);
 
-                    }
-                }
+//                if (articleListMap.isEmpty()) {
+//                    System.out.println(id + "번 게시물 없어");
+//                    return 0;
+//                }
 
+                Article article = new Article(articleListMap);
+
+                System.out.println("번호 : " + article.getId());
+                System.out.println("제목 : " + article.getTitle());
+                System.out.println("내용 : " + article.getBody());
+                System.out.println("작성시간 : " + article.getRegDate());
+                System.out.println("수정시간 : " + article.getUpdateDate());
             }
+
+
         }
         return 0;
     }
