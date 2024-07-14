@@ -2,16 +2,21 @@ package org.koreait.controller;
 
 import org.koreait.Util.DBUtil;
 import org.koreait.Util.SecSql;
+import org.koreait.service.MemberService;
 
 import java.sql.Connection;
 import java.util.Scanner;
 
 public class MemberController {
-    Connection conn;
-    Scanner sc;
+    private Connection conn;
+    private Scanner sc;
+
+    private MemberService memberService;
+
     public MemberController(Scanner sc, Connection conn) {
         this.sc = sc;
         this.conn = conn;
+        this.memberService = new MemberService();
     }
 
     public void doJoin() {
@@ -30,13 +35,9 @@ public class MemberController {
                 continue;
             }
 
-            SecSql sql = new SecSql();
 
-            sql.append("SELECT COUNT(*) > 0");
-            sql.append("FROM `member`");
-            sql.append("WHERE loginId = ?;", loginId);
 
-            boolean isLoindIdDup = DBUtil.selectRowBooleanValue(conn, sql);
+            boolean isLoindIdDup = memberService.isLoginIdDup(conn, loginId);
 
             if (isLoindIdDup) {
                 System.out.println(loginId + "는(은) 이미 사용중");
