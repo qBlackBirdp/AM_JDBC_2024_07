@@ -1,6 +1,6 @@
 package org.koreait.controller;
 
-import org.koreait.Article.Article;
+import org.koreait.dto.Article;
 import org.koreait.service.ArticleService;
 
 
@@ -126,6 +126,7 @@ public class ArticleController {
             System.out.println("번호 : " + article.getId());
             System.out.println("제목 : " + article.getTitle());
             System.out.println("내용 : " + article.getBody());
+            System.out.println("작성자 : " + article.getName());
             System.out.println("작성시간 : " + article.getRegDate());
             System.out.println("수정시간 : " + article.getUpdateDate());
         }

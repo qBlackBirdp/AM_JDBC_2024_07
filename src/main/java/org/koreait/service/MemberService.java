@@ -21,7 +21,10 @@ public class MemberService {
     }
 
     public boolean doLogin(String loginId, String loginPw) {
-
         return memberDao.doLogin(loginId, loginPw);
+    }
+
+    public int isLogined(String loginId) {
+        return memberDao.isLogined(loginId);
     }
 }

@@ -68,7 +68,11 @@ public class ArticleDao {
 
     public Map<String, Object> showDetail(int id) {
         SecSql sql = new SecSql();
-        sql.append("SELECT * FROM article WHERE id = ?;", id);
+        sql.append("SELECT a.*, m.`name`");
+        sql.append("FROM article a");
+        sql.append("INNER JOIN `member` m");
+        sql.append("ON a.memberId = m.id");
+        sql.append("WHERE a.id = ?;", id);
 
         return DBUtil.selectRow(conn, sql);
     }

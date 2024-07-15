@@ -1,4 +1,4 @@
-package org.koreait.Article;
+package org.koreait.dto;
 
 import java.util.Map;
 
@@ -8,13 +8,15 @@ public class Article {
     private String updateDate;
     private String title;
     private String body;
+    private String name;
 
-    public Article(int id, String title, String body, String regDate, String updateDate) {
+    public Article(int id, String title, String body, String regDate, String updateDate, String name) {
         this.id = id;
         this.regDate = regDate;
         this.updateDate = updateDate;
         this.title = title;
         this.body = body;
+        this.name = name;
     }
 
     public Article(Map<String, Object> articleMap) {
@@ -23,6 +25,7 @@ public class Article {
         this.updateDate = (String) articleMap.get("updateDate");
         this.title = (String) articleMap.get("title");
         this.body = (String) articleMap.get("body");
+        this.name = (String) articleMap.get("name");
     }
 
     @Override
@@ -33,7 +36,16 @@ public class Article {
                 ", updateDate='" + updateDate + '\'' +
                 ", title='" + title + '\'' +
                 ", body='" + body + '\'' +
+                ", writer='" + name + '\'' +
                 '}';
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String writer) {
+        this.name = name;
     }
 
     public String getUpdateDate() {

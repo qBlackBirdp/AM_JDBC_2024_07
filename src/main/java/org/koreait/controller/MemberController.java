@@ -11,6 +11,8 @@ public class MemberController {
 
     MemberService memberService;
 
+    protected static int loginedMember;
+
     public MemberController(Scanner sc, Connection conn) {
         this.sc = sc;
         this.conn = conn;
@@ -88,15 +90,48 @@ public class MemberController {
     }
 
     public void doLogin() {
-        System.out.println("== 로그인 ==");
-        System.out.print("로그인 아이디 : ");
-        String loginId = sc.nextLine().trim();
-        System.out.print("비밀번호 : ");
-        String loginPw = sc.nextLine().trim();
+        if (isLogined()) {
+            System.out.println("이미 로그인 되어있음.");
+            return;
+        }
+        int i = 0;
 
-        boolean isValidUser = memberService.doLogin(loginId, loginPw);
-        if (isValidUser) {
-            System.out.println("== 로그인 완료 ==");
-        } else System.out.println("== 로그인 실패 ==");
+        while (true) {
+            System.out.println("== 로그인 ==");
+            System.out.print("로그인 아이디 : ");
+            String loginId = sc.nextLine().trim();
+            System.out.print("비밀번호 : ");
+            String loginPw = sc.nextLine().trim();
+
+            boolean isValidUser = memberService.doLogin(loginId, loginPw);
+            if (isValidUser) {
+                System.out.println("== 로그인 완료 ==");
+
+                loginedMember = memberService.isLogined(loginId);
+                System.out.println(loginedMember);
+                return;
+            } else {
+                i++;
+                System.out.printf("== 로그인 실패 (로그인 시도 %d, 3번 실패시 out) ==\n", i);
+                if (i == 3)  {
+                    System.out.println("!!!! OUT OF USER !!!!");
+                    return;
+                }
+            }
+        }
+    }
+
+    public void doLogout() {
+        if (isLogined()) {
+            loginedMember = 0;
+            System.out.println("== 로그 아웃 완료 ==");
+        } else {
+            System.out.println("로그인 부터 해.");
+        }
+    }
+
+    private boolean isLogined() {
+
+        return loginedMember != 0;
     }
 }

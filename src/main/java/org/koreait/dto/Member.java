@@ -1,4 +1,4 @@
-package org.koreait.member;
+package org.koreait.dto;
 
 import java.util.Map;
 
@@ -9,13 +9,15 @@ public class Member {
     private String updateDate;
     private String loginId;
     private String loginPw;
+    private String name;
 
-    public Member(int id, String regDate, String updateDate, String loginId, String loginPw) {
+    public Member(int id, String regDate, String updateDate, String loginId, String loginPw, String name) {
         this.id = id;
         this.regDate = regDate;
         this.updateDate = updateDate;
         this.loginId = loginId;
         this.loginPw = loginPw;
+        this.name = name;
     }
 
     public Member(Map<String, Object> memberMap) {
@@ -24,6 +26,7 @@ public class Member {
         this.updateDate = (String) memberMap.get("updateDate");
         this.loginId = (String) memberMap.get("loginId");
         this.loginPw = (String) memberMap.get("loginPw");
+        this.name = (String) memberMap.get("name");
     }
 
     @Override
@@ -34,7 +37,16 @@ public class Member {
                 ", updateDate='" + updateDate + '\'' +
                 ", loginId='" + loginId + '\'' +
                 ", loginPw='" + loginPw + '\'' +
+                ", name='" + name + '\'' +
                 '}';
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public int getId() {

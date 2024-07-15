@@ -15,7 +15,8 @@ CREATE TABLE article(
                         regDate DATETIME NOT NULL,
                         updateDate DATETIME NOT NULL,
                         title CHAR(100) NOT NULL,
-                        `body` TEXT NOT NULL
+                        `body` TEXT NOT NULL,
+                        memberId INT NOT NULL
 );
 
 SELECT *
@@ -32,7 +33,7 @@ CREATE TABLE `member`
 );
 
 SELECT *
-FROM member;
+FROM `member`;
 
 
 ##############################   TEST   ####################################
@@ -40,7 +41,8 @@ INSERT INTO article
 SET regDate = NOW(),
     updateDate = NOW(),
     title = CONCAT('제목', SUBSTRING(RAND() * 1000 FROM 1 FOR 2)),
-    `body` = CONCAT('내용', SUBSTRING(RAND() * 1000 FROM 1 FOR 2));
+    `body` = CONCAT('내용', SUBSTRING(RAND() * 1000 FROM 1 FOR 2)),
+    memberId = 2;
 
 SELECT *
 FROM article;
@@ -59,6 +61,6 @@ SET regDate = NOW(),
     loginPw = 'test2',
     `name` = '홍길동';
 
-SELECT COUNT(*) > 0 FROM `member` WHERE loginId = ?;
-
+SELECT COUNT(*) > 0 FROM `member` WHERE loginId = 'test1';
+SELECT COUNT(*) > 0 FROM `member` WHERE loginId = 'sk';
 

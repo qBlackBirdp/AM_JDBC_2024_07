@@ -37,10 +37,19 @@ public class MemberDao {
 
     public boolean doLogin(String loginId, String loginPw) {
         SecSql sql = new SecSql();
-        sql.append("SELECT COUNT(*) > 0 AS isValidUser");
+        sql.append("SELECT COUNT(*) > 0");
         sql.append("FROM member");
         sql.append("WHERE loginId = ? AND loginPw = ?;", loginId, loginPw);
 
         return DBUtil.selectRowBooleanValue(conn, sql);
+    }
+
+    public int isLogined(String loginId) {
+        SecSql sql = new SecSql();
+        sql.append("SELECT COUNT(*) > 0");
+        sql.append("FROM member");
+        sql.append("WHERE loginId = ?;", loginId);
+
+        return DBUtil.selectRowIntValue(conn, sql);
     }
 }

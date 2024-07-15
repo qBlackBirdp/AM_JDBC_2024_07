@@ -1,6 +1,6 @@
 package org.koreait.test;
 
-import org.koreait.Article.Article;
+import org.koreait.dto.Article;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -33,7 +33,8 @@ public class JDBCDeleteTest {
                 String updateDate = rs.getString("updateDate");
                 String title = rs.getString("title");
                 String body = rs.getString("body");
-                Article article = new Article(id, regDate, updateDate, title, body);
+                String writer = rs.getString("writer");
+                Article article = new Article(id, regDate, updateDate, title, body, writer);
                 articles.add(article);
             }
         } catch (ClassNotFoundException e) {
