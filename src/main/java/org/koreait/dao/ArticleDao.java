@@ -10,8 +10,6 @@ import java.util.Map;
 
 public class ArticleDao {
 
-    Member member;
-
     public int doWrite(String title, String body) {
         SecSql sql = new SecSql();
 
@@ -20,7 +18,7 @@ public class ArticleDao {
         sql.append("updateDate = NOW(),");
         sql.append("title = ?,", title);
         sql.append("`body`= ?,", body);
-        sql.append("memberId = ?;", member.getId());
+        sql.append("memberId = ?;", Container.session.loginedMember.getId());
 
         return DBUtil.insert(Container.conn, sql);
     }

@@ -40,7 +40,5 @@ public class Container {
 
         articleController = new ArticleController();
         memberController = new MemberController();
-
-
     }
 }
