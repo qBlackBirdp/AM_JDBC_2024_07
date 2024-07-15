@@ -2,8 +2,10 @@ package org.koreait.dao;
 
 import org.koreait.Util.DBUtil;
 import org.koreait.Util.SecSql;
+import org.koreait.dto.Member;
 
 import java.sql.Connection;
+import java.util.Map;
 
 public class MemberDao {
     Connection conn;
@@ -51,5 +53,21 @@ public class MemberDao {
         sql.append("WHERE loginId = ?;", loginId);
 
         return DBUtil.selectRowIntValue(conn, sql);
+    }
+
+    public Member getMemberByLoginId(String loginId) {
+        SecSql sql = new SecSql();
+
+        sql.append("SELECT * ");
+        sql.append("FROM `member`");
+        sql.append("WHERE loginId = ?;", loginId);
+
+        Map<String, Object> memberMap = DBUtil.selectRow(conn, sql);
+
+        if (memberMap.isEmpty()) {
+            return null;
+        }
+
+        return new Member(memberMap);
     }
 }

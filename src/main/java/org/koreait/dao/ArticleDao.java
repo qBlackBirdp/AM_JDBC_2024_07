@@ -2,6 +2,7 @@ package org.koreait.dao;
 
 import org.koreait.Util.DBUtil;
 import org.koreait.Util.SecSql;
+import org.koreait.dto.Member;
 
 import java.sql.Connection;
 import java.util.List;
@@ -10,6 +11,7 @@ import java.util.Map;
 public class ArticleDao {
 
     Connection conn;
+    Member member;
 
     public ArticleDao(Connection conn) {
         this.conn = conn;
@@ -22,7 +24,8 @@ public class ArticleDao {
         sql.append("SET regDate = NOW(),");
         sql.append("updateDate = NOW(),");
         sql.append("title = ?,", title);
-        sql.append("`body`= ?;", body);
+        sql.append("`body`= ?,", body);
+        sql.append("memberId = ?;", member.getId());
 
         return DBUtil.insert(conn, sql);
     }

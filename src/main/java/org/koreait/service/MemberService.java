@@ -1,8 +1,10 @@
 package org.koreait.service;
 
 import org.koreait.dao.MemberDao;
+import org.koreait.dto.Member;
 
 import java.sql.Connection;
+import java.util.Map;
 
 public class MemberService {
 
@@ -27,4 +29,9 @@ public class MemberService {
     public int isLogined(String loginId) {
         return memberDao.isLogined(loginId);
     }
+
+    public Member getMemberByLoginId(String loginId) {
+        return memberDao.getMemberByLoginId(loginId);
+    }
+
 }

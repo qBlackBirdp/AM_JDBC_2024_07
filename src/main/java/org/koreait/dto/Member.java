@@ -88,4 +88,6 @@ public class Member {
     public void setLoginPw(String loginPw) {
         this.loginPw = loginPw;
     }
+
+
 }
