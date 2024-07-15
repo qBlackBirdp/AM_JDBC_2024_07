@@ -2,20 +2,15 @@ package org.koreait.dao;
 
 import org.koreait.Util.DBUtil;
 import org.koreait.Util.SecSql;
+import org.koreait.container.Container;
 import org.koreait.dto.Member;
 
-import java.sql.Connection;
 import java.util.List;
 import java.util.Map;
 
 public class ArticleDao {
 
-    Connection conn;
     Member member;
-
-    public ArticleDao(Connection conn) {
-        this.conn = conn;
-    }
 
     public int doWrite(String title, String body) {
         SecSql sql = new SecSql();
@@ -27,7 +22,7 @@ public class ArticleDao {
         sql.append("`body`= ?,", body);
         sql.append("memberId = ?;", member.getId());
 
-        return DBUtil.insert(conn, sql);
+        return DBUtil.insert(Container.conn, sql);
     }
 
     public List<Map<String, Object>> showList() {
@@ -37,21 +32,21 @@ public class ArticleDao {
         sql.append("FROM article");
         sql.append("ORDER BY id DESC");
 
-        return DBUtil.selectRows(conn, sql);
+        return DBUtil.selectRows(Container.conn, sql);
     }
 
     public int isExistId(int id) {
         SecSql sql = new SecSql();
         sql.append("SELECT COUNT(*) FROM article WHERE id = ?;", id);
 
-        return DBUtil.selectRowIntValue(conn, sql);
+        return DBUtil.selectRowIntValue(Container.conn, sql);
     }
 
     public void doDelete(int id) {
         SecSql sql = new SecSql();
         sql.append("DELETE FROM article WHERE id = ?;", id);
 
-        DBUtil.delete(conn, sql);
+        DBUtil.delete(Container.conn, sql);
     }
 
     public void doUpdate(String newTitle, String newBody, int id) {
@@ -66,7 +61,7 @@ public class ArticleDao {
         }
         sql.append("WHERE id = ?;", id);
 
-        DBUtil.update(conn, sql);
+        DBUtil.update(Container.conn, sql);
     }
 
     public Map<String, Object> showDetail(int id) {
@@ -77,6 +72,6 @@ public class ArticleDao {
         sql.append("ON a.memberId = m.id");
         sql.append("WHERE a.id = ?;", id);
 
-        return DBUtil.selectRow(conn, sql);
+        return DBUtil.selectRow(Container.conn, sql);
     }
 }

@@ -1,25 +1,16 @@
 package org.koreait.controller;
 
 
+import org.koreait.container.Container;
 import org.koreait.dto.Member;
 import org.koreait.service.MemberService;
 
-import java.sql.Connection;
-
-import java.util.Scanner;
-
 public class MemberController {
-    Connection conn;
-    Scanner sc;
 
     MemberService memberService;
 
-    protected static int loginedMember;
-
-    public MemberController(Scanner sc, Connection conn) {
-        this.sc = sc;
-        this.conn = conn;
-        this.memberService = new MemberService(conn);
+    public MemberController() {
+        this.memberService = Container.memberService;
     }
 
     public void doJoin() {
@@ -31,7 +22,7 @@ public class MemberController {
         System.out.println("==회원가입==");
         while (true) {
             System.out.print("로그인 아이디 : ");
-            loginId = sc.nextLine().trim();
+            loginId = Container.sc.nextLine().trim();
 
             if (loginId.isEmpty() || loginId.contains(" ")) {
                 System.out.println("아이디 똑바로 써");
@@ -48,7 +39,7 @@ public class MemberController {
         }
         while (true) {
             System.out.print("비밀번호 : ");
-            loginPw = sc.nextLine().trim();
+            loginPw = Container.sc.nextLine().trim();
 
             if (loginPw.isEmpty() || loginPw.contains(" ")) {
                 System.out.println("비번 똑바로 입력해");
@@ -59,7 +50,7 @@ public class MemberController {
 
             while (true) {
                 System.out.print("비밀번호 확인 : ");
-                loginPwConfirm = sc.nextLine().trim();
+                loginPwConfirm = Container.sc.nextLine().trim();
 
                 if (loginPwConfirm.isEmpty() || loginPwConfirm.contains(" ")) {
                     System.out.println("비번 확인 똑바로 써");
@@ -78,7 +69,7 @@ public class MemberController {
 
         while (true) {
             System.out.print("이름 : ");
-            name = sc.nextLine();
+            name = Container.sc.nextLine();
 
             if (name.isEmpty() || name.contains(" ")) {
                 System.out.println("이름 똑바로 써");
@@ -93,7 +84,7 @@ public class MemberController {
     }
 
     public void doLogin() {
-        if (isLogined()) {
+        if (Container.session.loginedMemberId != -1) {
             System.out.println("이미 로그인 되어있음.");
             return;
         }
@@ -103,7 +94,7 @@ public class MemberController {
         System.out.println("==로그인==");
         while (true) {
             System.out.print("로그인 아이디 : ");
-            loginId = sc.nextLine().trim();
+            loginId = Container.sc.nextLine().trim();
 
             if (loginId.length() == 0 || loginId.contains(" ")) {
                 System.out.println("아이디 똑바로 써");
@@ -132,7 +123,7 @@ public class MemberController {
             }
 
             System.out.print("비밀번호 : ");
-            loginPw = sc.nextLine().trim();
+            loginPw = Container.sc.nextLine().trim();
 
             if (loginPw.isEmpty() || loginPw.contains(" ")) {
                 tryCount++;
@@ -145,82 +136,34 @@ public class MemberController {
                 continue;
             }
 
+            Container.session.loginedMember = member;
+            Container.session.loginedMemberId = member.getId();
+
             System.out.println(member.getName() + "님 환영합니다");
-            loginedMember = memberService.isLogined(loginId);
             break;
         }
     }
 
 
     public void doLogout() {
-        if (isLogined()) {
-            loginedMember = 0;
+        if(Container.session.loginedMember != null) {
             System.out.println("== 로그 아웃 완료 ==");
+            Container.session.loginedMemberId = -1;
+            Container.session.loginedMember = null;
+        }else System.out.println("로그인 부터 해.");
+
+    }
+
+    public void showMemberProfile() {
+        if (Container.session.loginedMember == null) {
+            System.out.println("로그인 되어있지 않음.");
         } else {
-            System.out.println("로그인 부터 해.");
+            System.out.println("번호 : " + Container.session.loginedMember.getId());
+            System.out.println("아이디 : " + Container.session.loginedMember.getLoginId());
+            System.out.println("이름 : " + Container.session.loginedMember.getName());
+            System.out.println("가입 날짜 : " + Container.session.loginedMember.getRegDate());
+            System.out.println("회원정보 수정 날짜 : " + Container.session.loginedMember.getUpdateDate());
         }
-    }
-
-    private boolean isLogined() {
-
-        return loginedMember != 0;
-    }
-
-    public void showMemberDetail() {
-        System.out.println("== 회원 정보 확인 ==");
-        String loginId = null;
-        String loginPw = null;
-        while (true) {
-            System.out.print("로그인 아이디 : ");
-            loginId = sc.nextLine().trim();
-
-            if (loginId.isEmpty() || loginId.contains(" ")) {
-                System.out.println("아이디 똑바로 써");
-                continue;
-            }
-
-            boolean isLoindIdDup = memberService.isLoginIdDup(loginId);
-
-            if (!isLoindIdDup) {
-                System.out.println(loginId + "는(은) 없어");
-                continue;
-            }
-
-            break;
-        }
-        Member member = memberService.getMemberByLoginId(loginId);
-
-        int tryMaxCount = 3;
-        int tryCount = 0;
-
-        while (true) {
-            if (tryCount >= tryMaxCount) {
-                System.out.println("비번 다시 확인하고 시도해");
-                break;
-            }
-
-            System.out.print("비밀번호 : ");
-            loginPw = sc.nextLine().trim();
-
-            if (loginPw.isEmpty() || loginPw.contains(" ")) {
-                tryCount++;
-                System.out.println("비번 똑바로 입력해");
-                continue;
-            }
-            if (!member.getLoginPw().equals(loginPw)) {
-                tryCount++;
-                System.out.println("일치하지 않아");
-                continue;
-            }
-
-            System.out.println(member.getName() + "님 정보 확인");
-            break;
-        }
-        System.out.println("번호 : " + member.getId());
-        System.out.println("아이디 : " + member.getLoginId());
-        System.out.println("이름 : " + member.getName());
-        System.out.println("가입 일자 : " + member.getRegDate());
-        System.out.println("정보 수정일자 : " + member.getUpdateDate());
     }
 }
 

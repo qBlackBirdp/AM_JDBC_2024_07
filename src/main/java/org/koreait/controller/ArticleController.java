@@ -1,37 +1,36 @@
 package org.koreait.controller;
 
+import org.koreait.container.Container;
 import org.koreait.dto.Article;
 import org.koreait.service.ArticleService;
 
-
-import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Scanner;
+
 
 public class ArticleController {
-    Connection conn;
-    Scanner sc;
 
     private ArticleService articleService;
 
-    public ArticleController(Scanner sc, Connection conn) {
-        this.sc = sc;
-        this.conn = conn;
-        this.articleService = new ArticleService(conn);
+    public ArticleController() {
+        this.articleService = Container.articleService;
     }
 
     public void doWrite() {
-        System.out.println("==글쓰기==");
-        System.out.print("제목 : ");
-        String title = sc.nextLine();
-        System.out.print("내용 : ");
-        String body = sc.nextLine();
+        if(Container.session.loginedMember == null){
+            System.out.println("로그인 안하면 글 못써");
+        }else {
+            System.out.println("==글쓰기==");
+            System.out.print("제목 : ");
+            String title = Container.sc.nextLine();
+            System.out.print("내용 : ");
+            String body = Container.sc.nextLine();
 
-        int id = articleService.doWrite(title, body);
+            int id = articleService.doWrite(title, body);
 
-        System.out.println(id + "번 글이 생성되었습니다");
+            System.out.println(id + "번 글이 생성되었습니다");
+        }
     }
 
     public void showList() {
@@ -95,9 +94,9 @@ public class ArticleController {
         } else {
             System.out.println("==수정==");
             System.out.print("새 제목 : ");
-            String newTitle = sc.nextLine().trim();
+            String newTitle = Container.sc.nextLine().trim();
             System.out.print("새 내용 : ");
-            String newBody = sc.nextLine().trim();
+            String newBody = Container.sc.nextLine().trim();
 
             articleService.doUpdate(newTitle, newBody, id);
 
