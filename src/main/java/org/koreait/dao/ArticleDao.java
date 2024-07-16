@@ -49,15 +49,17 @@ public class ArticleDao {
 
     public void doUpdate(String newTitle, String newBody, int id) {
         SecSql sql = new SecSql();
-        sql.append("UPDATE article");
-        sql.append("SET updateDate = NOW(),");
+        sql.append("UPDATE article a");
+        sql.append("INNER JOIN `member` m");
+        sql.append("SET a.updateDate = NOW(),");
         if (!newTitle.isEmpty()) {
-            sql.append("title = ?,", newTitle);
+            sql.append("a.title = ?,", newTitle);
         }
         if (!newBody.isEmpty()) {
-            sql.append("`body`= ?", newBody);
+            sql.append("a.`body`= ?", newBody);
         }
-        sql.append("WHERE id = ?;", id);
+        sql.append("WHERE a.id = ?", id);
+        sql.append("AND m.id = ?;", Container.session.loginedMember.getId());
 
         DBUtil.update(Container.conn, sql);
     }
@@ -71,5 +73,16 @@ public class ArticleDao {
         sql.append("WHERE a.id = ?;", id);
 
         return DBUtil.selectRow(Container.conn, sql);
+    }
+
+    public boolean canAccess(int articleId) {
+        SecSql sql = new SecSql();
+        sql.append("SELECT COUNT(*) > 0");  // 권한이 있는지 확인하는 부울 값을 반환하기 위해 COUNT 사용
+        sql.append("FROM article a");
+        sql.append("INNER JOIN `member` m ON a.memberId = m.id");
+        sql.append("WHERE a.id = ?", articleId);
+        sql.append("AND m.id = ?", Container.session.loginedMember.getId());
+
+        return DBUtil.selectRowBooleanValue(Container.conn, sql);
     }
 }

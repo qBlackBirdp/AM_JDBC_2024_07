@@ -42,7 +42,7 @@ SET regDate = NOW(),
     updateDate = NOW(),
     title = CONCAT('제목', SUBSTRING(RAND() * 1000 FROM 1 FOR 2)),
     `body` = CONCAT('내용', SUBSTRING(RAND() * 1000 FROM 1 FOR 2)),
-    memberId = 2;
+    memberId = 1;
 
 SELECT *
 FROM article;
@@ -64,3 +64,15 @@ SET regDate = NOW(),
 SELECT COUNT(*) > 0 FROM `member` WHERE loginId = 'test1';
 SELECT COUNT(*) > 0 FROM `member` WHERE loginId = 'sk';
 
+SELECT a.*, m.id
+FROM article a
+         INNER JOIN `member` m
+                    ON a.memberId = m.id
+WHERE m.id = 3;
+
+UPDATE article a
+    INNER JOIN `member` m
+SET a.updateDate = NOW(),
+    a.title = '2222',
+    a.`body`= '2222'
+WHERE a.id = 1 AND m.id = 1;

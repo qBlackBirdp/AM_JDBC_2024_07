@@ -38,4 +38,8 @@ public class ArticleService {
     public Map<String, Object> showDetail(int id) {
         return articleDao.showDetail(id);
     }
+
+    public boolean canAccess(int id) {
+        return articleDao.canAccess(id);
+    }
 }
