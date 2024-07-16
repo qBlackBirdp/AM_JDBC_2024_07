@@ -56,67 +56,62 @@ public class ArticleController {
         }
     }
 
-    public void doDelete(String cmd) {
+    private Integer validateAndGetArticleId(String cmd) {
         if(Container.session.loginedMember == null){
             System.out.println("로그인 안되어 있어.");
-            return;
+            return null;
         }
-        int id = 0;
 
+        int id;
         try {
             id = Integer.parseInt(cmd.split(" ")[2]);
         } catch (Exception e) {
             System.out.println("번호는 정수로 입력해");
-            return;
+            return null;
+        }
+
+        int articleId = articleService.isExistId(id);
+        if (articleId == 0) {
+            System.out.println(id + "번 게시물 없어.");
+            return null;
         }
 
         boolean canAccess = articleService.canAccess(id);
+        if (!canAccess) {
+            System.out.println("권한 없어.");
+            return null;
+        }
 
-        int deleteId = articleService.isExistId(id);
+        return id;
+    }
 
-        if (deleteId == 0) {
-            System.out.println(id + "번 게시물 없어.");
+    public void doDelete(String cmd) {
+
+        Integer id = validateAndGetArticleId(cmd);
+
+        if (id == null) {
             return;
         }
-        if(canAccess){
-                articleService.doDelete(id);
-                System.out.println(id + "번 글이 삭제되었습니다.");
-        } else System.out.println("삭제 권한 없어.");
 
+        articleService.doDelete(id);
+        System.out.println(id + "번 글이 삭제되었습니다.");
     }
 
     public void doModify(String cmd) {
-        if(Container.session.loginedMember == null){
-            System.out.println("로그인 안되어 있어.");
-            return;
-        }
-        int id = 0;
 
-        try {
-            id = Integer.parseInt(cmd.split(" ")[2]);
-        } catch (Exception e) {
-            System.out.println("번호는 정수로 입력해");
+        Integer id = validateAndGetArticleId(cmd);
+        if (id == null) {
             return;
         }
 
-        boolean canAccess = articleService.canAccess(id);
-        int articleId = articleService.isExistId(id);
+        System.out.println("==수정==");
+        System.out.print("새 제목 : ");
+        String newTitle = Container.sc.nextLine().trim();
+        System.out.print("새 내용 : ");
+        String newBody = Container.sc.nextLine().trim();
 
-        if (articleId == 0) {
-            System.out.println(id + "번 게시물 없어.");
-            return;
-        }
-        if (canAccess) {
-            System.out.println("==수정==");
-            System.out.print("새 제목 : ");
-            String newTitle = Container.sc.nextLine().trim();
-            System.out.print("새 내용 : ");
-            String newBody = Container.sc.nextLine().trim();
-
-            articleService.doUpdate(newTitle, newBody, id);
-
-            System.out.println(id + "번 글이 수정되었습니다.");
-        } else System.out.println("수정 권한 없어.");
+        articleService.doUpdate(newTitle, newBody, id);
+        System.out.println(id + "번 글이 수정되었습니다.");
     }
 
     public void showDetail(String cmd) {
