@@ -1,6 +1,7 @@
 package org.koreait.controller;
 
 import org.koreait.container.Container;
+import org.koreait.dao.ArticleDao;
 import org.koreait.dto.Article;
 import org.koreait.service.ArticleService;
 
@@ -37,13 +38,7 @@ public class ArticleController {
 
         System.out.println("==목록==");
 
-        List<Article> articles = new ArrayList<>();
-
-        List<Map<String, Object>> articleListMap = articleService.showList();
-
-        for (Map<String, Object> articleMap : articleListMap) {
-            articles.add(new Article(articleMap));
-        }
+        List<Article> articles = articleService.getArticles();
 
         if (articles.isEmpty()) {
             System.out.println("게시글이 없습니다");
@@ -100,6 +95,7 @@ public class ArticleController {
     public void doModify(String cmd) {
 
         Integer id = validateAndGetArticleId(cmd);
+
         if (id == null) {
             return;
         }
@@ -128,9 +124,7 @@ public class ArticleController {
         if (articleId == 0) {
             System.out.println(id + "번 게시물 없어.");
         } else {
-            Map<String, Object> articleListMap = articleService.showDetail(id);
-
-            Article article = new Article(articleListMap);
+            Article article = articleService.showDetail(id);
 
             System.out.println("번호 : " + article.getId());
             System.out.println("제목 : " + article.getTitle());

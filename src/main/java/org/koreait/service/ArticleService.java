@@ -2,6 +2,7 @@ package org.koreait.service;
 
 import org.koreait.container.Container;
 import org.koreait.dao.ArticleDao;
+import org.koreait.dto.Article;
 
 import java.util.List;
 import java.util.Map;
@@ -19,8 +20,8 @@ public class ArticleService {
         return articleDao.doWrite(title, body);
     }
 
-    public List<Map<String, Object>> showList() {
-        return articleDao.showList();
+    public List<Article> getArticles() {
+        return articleDao.getArticles();
     }
 
     public int isExistId(int id) {
@@ -35,7 +36,7 @@ public class ArticleService {
         articleDao.doUpdate(newTitle, newBody, id);
     }
 
-    public Map<String, Object> showDetail(int id) {
+    public Article showDetail(int id) {
         return articleDao.showDetail(id);
     }
 

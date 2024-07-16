@@ -3,10 +3,14 @@ package org.koreait.dao;
 import org.koreait.Util.DBUtil;
 import org.koreait.Util.SecSql;
 import org.koreait.container.Container;
+import org.koreait.dto.Article;
 
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import static org.koreait.container.Container.articleService;
 
 public class ArticleDao {
 
@@ -23,7 +27,7 @@ public class ArticleDao {
         return DBUtil.insert(Container.conn, sql);
     }
 
-    public List<Map<String, Object>> showList() {
+    public List<Article> getArticles()  {
         SecSql sql = new SecSql();
 
         sql.append("SELECT a.*, m.`name`");
@@ -31,7 +35,15 @@ public class ArticleDao {
         sql.append("INNER JOIN member m on a.memberId = m.id");
         sql.append("ORDER BY id DESC");
 
-        return DBUtil.selectRows(Container.conn, sql);
+        List<Map<String, Object>> articleListMap = DBUtil.selectRows(Container.conn, sql);
+        List<Article> articles = new ArrayList<>();
+
+
+        for (Map<String, Object> articleMap : articleListMap) {
+            articles.add(new Article(articleMap));
+        }
+
+        return articles;
     }
 
     public int isExistId(int id) {
@@ -65,7 +77,7 @@ public class ArticleDao {
         DBUtil.update(Container.conn, sql);
     }
 
-    public Map<String, Object> showDetail(int id) {
+    public Article showDetail(int id) {
         SecSql sql = new SecSql();
         sql.append("SELECT a.*, m.`name`");
         sql.append("FROM article a");
@@ -73,7 +85,13 @@ public class ArticleDao {
         sql.append("ON a.memberId = m.id");
         sql.append("WHERE a.id = ?;", id);
 
-        return DBUtil.selectRow(Container.conn, sql);
+        Map<String, Object> articleMap = DBUtil.selectRow(Container.conn, sql);
+
+        if(articleMap == null) {
+            return null;
+        }
+
+        return new Article(articleMap);
     }
 
     public boolean canAccess(int articleId) {
