@@ -18,8 +18,8 @@ public class ArticleController {
     }
 
     public void doWrite() {
-        if(Container.session.loginedMember == null){
-            System.out.println("로그인 안하면 글 못써");
+        if (!Container.session.isLogined()) {
+            System.out.println("로그인안하면 글 못써.");
         }else {
             System.out.println("==글쓰기==");
             System.out.print("제목 : ");
@@ -57,8 +57,8 @@ public class ArticleController {
     }
 
     private Integer validateAndGetArticleId(String cmd) {
-        if(Container.session.loginedMember == null){
-            System.out.println("로그인 안되어 있어.");
+        if (!Container.session.isLogined()) {
+            System.out.println("로그인부터해.");
             return null;
         }
 

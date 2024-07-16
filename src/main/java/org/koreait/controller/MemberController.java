@@ -14,6 +14,10 @@ public class MemberController {
     }
 
     public void doJoin() {
+        if (Container.session.isLogined()) {
+            System.out.println("이미 로그인 되어있음.");
+            return;
+        }
         String loginId = null;
         String loginPw = null;
         String loginPwConfirm = null;
@@ -84,7 +88,7 @@ public class MemberController {
     }
 
     public void doLogin() {
-        if (Container.session.loginedMemberId != -1) {
+        if (Container.session.isLogined()) {
             System.out.println("이미 로그인 되어있음.");
             return;
         }
@@ -96,14 +100,14 @@ public class MemberController {
             System.out.print("로그인 아이디 : ");
             loginId = Container.sc.nextLine().trim();
 
-            if (loginId.length() == 0 || loginId.contains(" ")) {
+            if (loginId.isEmpty() || loginId.contains(" ")) {
                 System.out.println("아이디 똑바로 써");
                 continue;
             }
 
             boolean isLoindIdDup = memberService.isLoginIdDup(loginId);
 
-            if (isLoindIdDup == false) {
+            if (!isLoindIdDup) {
                 System.out.println(loginId + "는(은) 없어");
                 continue;
             }
@@ -136,8 +140,9 @@ public class MemberController {
                 continue;
             }
 
-            Container.session.loginedMember = member;
-            Container.session.loginedMemberId = member.getId();
+            Container.session.login(member);
+
+
 
             System.out.println(member.getName() + "님 환영합니다");
             break;
@@ -146,16 +151,15 @@ public class MemberController {
 
 
     public void doLogout() {
-        if(Container.session.loginedMember != null) {
+        if(Container.session.isLogined()) {
             System.out.println("== 로그 아웃 완료 ==");
-            Container.session.loginedMemberId = -1;
-            Container.session.loginedMember = null;
+            Container.session.logout();
         }else System.out.println("로그인 부터 해.");
 
     }
 
     public void showMemberProfile() {
-        if (Container.session.loginedMember == null) {
+        if (!Container.session.isLogined()) {
             System.out.println("로그인 되어있지 않음.");
         } else {
             System.out.println("번호 : " + Container.session.loginedMember.getId());

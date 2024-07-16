@@ -3,7 +3,7 @@ package org.koreait.dao;
 import org.koreait.Util.DBUtil;
 import org.koreait.Util.SecSql;
 import org.koreait.container.Container;
-import org.koreait.dto.Member;
+
 
 import java.util.List;
 import java.util.Map;

@@ -15,9 +15,10 @@ CREATE TABLE article(
                         regDate DATETIME NOT NULL,
                         updateDate DATETIME NOT NULL,
                         title CHAR(100) NOT NULL,
-                        `body` TEXT NOT NULL,
-                        memberId INT NOT NULL
+                        `body` TEXT NOT NULL
 );
+
+ALTER TABLE article ADD COLUMN memberId INT UNSIGNED NOT NULL AFTER updateDate;
 
 SELECT *
 FROM article;
@@ -42,7 +43,7 @@ SET regDate = NOW(),
     updateDate = NOW(),
     title = CONCAT('제목', SUBSTRING(RAND() * 1000 FROM 1 FOR 2)),
     `body` = CONCAT('내용', SUBSTRING(RAND() * 1000 FROM 1 FOR 2)),
-    memberId = 1;
+    memberId = 2;
 
 SELECT *
 FROM article;
@@ -60,6 +61,7 @@ SET regDate = NOW(),
     loginId = 'test2',
     loginPw = 'test2',
     `name` = '홍길동';
+
 
 SELECT COUNT(*) > 0 FROM `member` WHERE loginId = 'test1';
 SELECT COUNT(*) > 0 FROM `member` WHERE loginId = 'sk';
