@@ -50,9 +50,9 @@ public class ArticleController {
             return;
         }
 
-        System.out.println("  번호  /   제목  ");
+        System.out.println("  번호  /   제목     /      작성자");
         for (Article article : articles) {
-            System.out.printf("  %d     /   %s   \n", article.getId(), article.getTitle());
+            System.out.printf("  %d     /   %s      /     %s\n", article.getId(), article.getTitle(),article.getName());
         }
     }
 

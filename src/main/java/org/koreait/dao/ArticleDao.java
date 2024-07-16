@@ -26,8 +26,9 @@ public class ArticleDao {
     public List<Map<String, Object>> showList() {
         SecSql sql = new SecSql();
 
-        sql.append("SELECT *");
-        sql.append("FROM article");
+        sql.append("SELECT a.*, m.`name`");
+        sql.append("FROM article a");
+        sql.append("INNER JOIN member m on a.memberId = m.id");
         sql.append("ORDER BY id DESC");
 
         return DBUtil.selectRows(Container.conn, sql);
